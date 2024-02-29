@@ -121,6 +121,7 @@ echo "--------------------------"
 echo " " | tee -a $LOG
 echo "   1. ---> docker start db2_demo_data" | tee -a $LOG
 echo " " | tee -a $LOG
+echo "   * Start the DB2 application database that is deployed in a container." 
 echo "--------------------------"
 echo ""
 
@@ -134,30 +135,12 @@ sleep 2
 
 echo ""
 echo "==========================================="
-echo "2. Verify database container is running"
-echo "--------------------------"
-echo " " | tee -a $LOG
-echo "   2. ---> docker ps | grep db2_demo_data" | tee -a $LOG
-echo " " | tee -a $LOG
-echo "--------------------------"
-echo ""
-sleep 2 
-
-
-if [[ $INTERACTIVE_MODE == "true" ]]; then
-  read -n 1 -r -s -p $'Press enter to continue...\n'
-  echo ""
-fi    
-docker ps | grep db2_demo_data
-sleep 2
-
-echo ""
-echo "==========================================="
-echo "3. Create the docker network, pbw-network"
+echo "2. Create the docker network, pbw-network"
 echo "---------------------------------"
 echo " " | tee -a $LOG
-echo "   3. ---> docker network create pbw-network" | tee -a $LOG
+echo "   2. ---> docker network create pbw-network" | tee -a $LOG
 echo " " | tee -a $LOG
+echo "   * A local docker network is required for the database and application containers to communicate across containers." 
 echo "---------------------------------"
 echo ""
 sleep 3
@@ -172,29 +155,31 @@ sleep 2
 
 echo ""
 echo "==========================================="
-echo "4. Verify docker network is created"
+echo "3. Verify docker network is created"
 echo "---------------------------------"
 echo " " | tee -a $LOG
-echo "   4. ---> docker network list | grep pbw-network" | tee -a $LOG
+echo "   3. ---> docker network list | grep pbw-network" | tee -a $LOG
 echo " " | tee -a $LOG
+echo "   * List the new docker network named 'pbw-network' to ensure it was created." 
 echo "---------------------------------"
 echo ""
-sleep 3 
+sleep 2 
 
 if [[ $INTERACTIVE_MODE == "true" ]]; then
   read -n 1 -r -s -p $'Press enter to continue...\n'
   echo ""
 fi    
 docker network list | grep pbw-network
-
+sleep 2
 
 echo ""
 echo "==========================================="
-echo "5. Connect database container to the Docker network"
+echo "4. Connect database container to the Docker network"
 echo "------------------------------------------------"
 echo " " | tee -a $LOG
-echo "   5. ---> docker network connect pbw-network db2_demo_data" | tee -a $LOG
+echo "   4. ---> docker network connect pbw-network db2_demo_data" | tee -a $LOG
 echo " " | tee -a $LOG
+echo "   * The DB2 container must be connected to the docker network that the application will be connected to." 
 echo "------------------------------------------------"
 echo ""
 sleep 3 
@@ -210,11 +195,13 @@ sleep 2
 
 echo ""
 echo "==========================================="
-echo "6. Build and tag the 'PlantsByWebSphere' application container image"
+echo "5. Build and tag the 'PlantsByWebSphere' application container image"
 echo "--------------------------------------------------"
 echo " " | tee -a $LOG
-echo "   6. ---> docker build -f $STUDENT_PBW_BUNDLE/Containerfile --tag apps/pbw ." | tee -a $LOG
+echo "   5. ---> docker build -f $STUDENT_PBW_BUNDLE/Containerfile --tag apps/pbw ." | tee -a $LOG
 echo " " | tee -a $LOG
+echo "   * Use the 'Containerfile' from the migration bundle to create a container image that includes PlantsByWebSpere on Liberty server."
+echo "     --tag: the new image name will be created as 'apps/pbw'"
  echo "--------------------------------------------------"
 echo ""
 
@@ -230,11 +217,16 @@ sleep 3
 
 echo ""
 echo "==========================================="
-echo "7. Run 'PlantsByWebSphere' application in container"
+echo "6. Run 'PlantsByWebSphere' application in container"
 echo "--------------------------------------------------"
 echo " " | tee -a $LOG
-echo "   7. ---> docker run -d --rm -p 9080:9080 -p 9443:9443 --network pbw-network --name pbw  apps/pbw" | tee -a $LOG
+echo "   6. ---> docker run -d --rm -p 9080:9080 -p 9443:9443 --network pbw-network --name pbw  apps/pbw" | tee -a $LOG
 echo " " | tee -a $LOG
+echo "   * start the new app container"  
+echo "     -d: start the container in 'detached' mode"  
+echo "     --rm: remove the container when it is stopped"  
+echo "     -p: expose the HTTP(S) ports"  
+echo "     --network: connect the container to the same docker network as the DB2 container"  
 echo "--------------------------------------------------"
 echo ""
 sleep 3
