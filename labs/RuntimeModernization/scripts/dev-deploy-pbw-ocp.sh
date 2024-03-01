@@ -158,6 +158,7 @@ echo "--------------------------------------------------"
 echo " " | tee -a $LOG
 echo "   1. ---> docker tag apps/pbw default-route-openshift-image-registry.apps.ocp.ibm.edu/dev/pbw " | tee -a $LOG
 echo " " | tee -a $LOG
+echo "   * In order to push an image to an image registry, it must be appropriately tagged. In this case, for the OpenShift internal registry."
  echo "--------------------------------------------------"
 echo ""
 
@@ -180,6 +181,7 @@ echo "--------------------------"
 echo " " | tee -a $LOG
 echo "   2. ---> oc login -u ocadmin -p ibmrhocp" | tee -a $LOG
 echo " " | tee -a $LOG
+echo "   * The script will run OpenShift commands, so we must login to OCP."
 echo "--------------------------"
 echo ""
 
@@ -199,6 +201,7 @@ echo "--------------------------"
 echo " " | tee -a $LOG
 echo "   3. ---> oc new-project dev" | tee -a $LOG
 echo " " | tee -a $LOG
+echo "   * Create the 'dev' project in OpenShift, where the application and configuration will be deployed."
 echo "--------------------------"
 echo ""
 
@@ -217,6 +220,7 @@ echo "--------------------------"
 echo " " | tee -a $LOG
 echo "   4. ---> oc project dev" | tee -a $LOG
 echo " " | tee -a $LOG
+echo "   * Switch into the 'dev' project in OpenShift to run the OpenShift commands."
 echo "--------------------------"
 echo ""
 if [[ $INTERACTIVE_MODE == "true" ]]; then
@@ -234,6 +238,7 @@ echo "--------------------------"
 echo " " | tee -a $LOG
 echo "   5. ---> docker login -u $(oc whoami) -p $(oc whoami -t) default-route-openshift-image-registry.apps.ocp.ibm.edu" | tee -a $LOG
 echo " " | tee -a $LOG
+echo "   * To push the container image to the OpenShift internal registry, we must login to the registry."
 echo "--------------------------"
 echo ""
 if [[ $INTERACTIVE_MODE == "true" ]]; then
@@ -251,6 +256,7 @@ echo "--------------------------"
 echo " " | tee -a $LOG
 echo "   6. ---> docker push default-route-openshift-image-registry.apps.ocp.ibm.edu/dev/pbw:latest" | tee -a $LOG
 echo " " | tee -a $LOG
+echo "   * Push the newly tagged container image to the OpenShift internal registry."
 echo "--------------------------"
 echo ""
 if [[ $INTERACTIVE_MODE == "true" ]]; then
@@ -268,6 +274,7 @@ echo "--------------------------"
 echo " " | tee -a $LOG
 echo "   7. ---> oc get is | grep pbw" | tee -a $LOG
 echo " " | tee -a $LOG
+echo "   * Convenience command to list the new 'Image Stream' that ws created as a result of pushing the container image to the registry."
 echo "--------------------------"
 echo ""
 if [[ $INTERACTIVE_MODE == "true" ]]; then
@@ -285,6 +292,7 @@ echo "--------------------------"
 echo " " | tee -a $LOG
 echo "   8. ---> oc apply -k overlays/dev" | tee -a $LOG
 echo " " | tee -a $LOG
+echo "   * This is the SINGLE COMMAND to deploy the PlantsByWebSphere application and its configuration to OpenShift 'dev' project."
 echo "--------------------------"
 echo ""
 if [[ $INTERACTIVE_MODE == "true" ]]; then
@@ -316,6 +324,7 @@ echo "--------------------------"
 echo " " | tee -a $LOG
 echo "   9. ---> oc get deployment" | tee -a $LOG
 echo " " | tee -a $LOG
+echo "   * Convenience command to list the 'deployment' of the application in OpenShift, and verify it is available."
 echo "--------------------------"
 echo ""
 if [[ $INTERACTIVE_MODE == "true" ]]; then
@@ -340,6 +349,7 @@ echo "--------------------------"
 echo " " | tee -a $LOG
 echo "   10. ---> oc get pods" | tee -a $LOG
 echo " " | tee -a $LOG
+echo "   * Convenience command to list the PlantsByWebSphere 'pod' in OpenShift, and verify it is running. ."
 echo "--------------------------"
 echo ""
 if [[ $INTERACTIVE_MODE == "true" ]]; then
@@ -356,6 +366,7 @@ echo "--------------------------"
 echo " " | tee -a $LOG
 echo "   11. ---> oc get route | grep plantsbywebsphereee6" | tee -a $LOG
 echo " " | tee -a $LOG
+echo "   * Convenience command to display the 'route' that was created to acess the PlantsByWebSphere application running in the 'dev' project."
 echo "--------------------------"
 echo ""
 sleep 2
