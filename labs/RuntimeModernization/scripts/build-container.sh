@@ -68,6 +68,8 @@ sleep 2
 
 #stop the pbw container, if running
 echo "-> Esnure pbw application is stopped"
+/home/techzone/wlp/bin/server stop pbwserver > /dev/null 2>&1
+sleep 1
 docker stop pbw > /dev/null 2>&1
 sleep 2
 
