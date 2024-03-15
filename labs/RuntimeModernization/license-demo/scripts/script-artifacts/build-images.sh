@@ -4,11 +4,11 @@
 
 ## No input parameters required to run this script. 
 
-LICENSE_DEMO_DIR="/home/techzone/Student/labs/appmod/license-demo-test"
+LICENSE_DEMO_DIR="/home/techzone/Student/labs/appmod/license-demo"
 PBW_BUILD_DIR="$LICENSE_DEMO_DIR/pbw_migrationBundle"
 RESORTS_BUILD_DIR="$LICENSE_DEMO_DIR/modresorts_migrationBundle"
 
-OC_PROJECT="license-test"
+OC_PROJECT="license-demo"
 
 
 #Verify the build directories exist. The demo-setup script creates them

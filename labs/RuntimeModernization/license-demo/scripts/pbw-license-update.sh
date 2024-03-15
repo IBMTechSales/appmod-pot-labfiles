@@ -5,9 +5,9 @@
 ## No input parameters required to run this script. 
 ## You will be prompted to continue, as this script cleans up lab resources
 
-OC_PROJECT="license-test"
+OC_PROJECT="license-demo"
 
-LICENSE_DEMO_DIR="/home/techzone/Student/labs/appmod/license-demo-test"
+LICENSE_DEMO_DIR="/home/techzone/Student/labs/appmod/license-demo"
 CLONE_REPO_DIR="/home/techzone/appmod-pot-labfiles/labs/RuntimeModernization/license-demo"
 PBW_DEPLOY_DIR="$LICENSE_DEMO_DIR/pbw_migrationBundle/deploy"
 
@@ -51,4 +51,3 @@ echo "======================================"
 echo "" 
 
 exit 0
-

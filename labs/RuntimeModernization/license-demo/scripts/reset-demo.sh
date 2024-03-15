@@ -20,11 +20,11 @@ case ${answer:0:1} in
     ;;
 esac
 
-LICENSE_DEMO_DIR="/home/techzone/Student/labs/appmod/license-demo-test"
+LICENSE_DEMO_DIR="/home/techzone/Student/labs/appmod/license-demo"
 PBW_BUILD_DIR="$LICENSE_DEMO_DIR/pbw_migrationBundle"
 RESORTS_BUILD_DIR="$LICENSE_DEMO_DIR/modresorts_migrationBundle"
 
-OC_PROJECT="license-test"
+OC_PROJECT="license-demo"
 
 
 echo ""
@@ -63,14 +63,15 @@ echo "delete project $OC_PROJECT"
 oc delete project $OC_PROJECT
 
 echo "remove the PBW docker image"
-docker rmi default-route-openshift-image-registry.apps.ocp.ibm.edu/license-test/resorts:1.0
+docker rmi default-route-openshift-image-registry.apps.ocp.ibm.edu/$OC_PROJECT/resorts:1.0
 echo "remove the RESORTS docker image"
-docker rmi default-route-openshift-image-registry.apps.ocp.ibm.edu/license-test/pbw:1.0
+docker rmi default-route-openshift-image-registry.apps.ocp.ibm.edu/$OC_PROJECT/pbw:1.0
 
-echo "Logout of ocp internal registry"
-docker logout
-echo "logout of ocp"
-oc logout
+## comment out for now
+#echo "Logout of ocp internal registry"
+#docker logout
+#echo "logout of ocp"
+#oc logout
 
 
 echo "remove the demo directory, if it exists." 
@@ -94,4 +95,3 @@ echo "================================"
 echo "" 
 
 exit 0
-
