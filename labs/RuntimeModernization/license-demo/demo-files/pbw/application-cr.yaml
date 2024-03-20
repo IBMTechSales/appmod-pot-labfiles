@@ -6,7 +6,7 @@ metadata:
   name: plantsbywebsphereee6
 spec:
   replicas: 4
-  applicationImage: default-route-openshift-image-registry.apps.ocp.ibm.edu/apps-pbw/pbw-app:1.0
+  applicationImage: default-route-openshift-image-registry.apps.ocp.ibm.edu/license-demo/pbw:1.0
   expose: true
   resources:
     limits:
