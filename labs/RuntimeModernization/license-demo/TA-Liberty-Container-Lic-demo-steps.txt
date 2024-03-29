@@ -1,0 +1,98 @@
+######## setup
+
+#clone the git repo
+git clone https://github.com/IBMTechSales/appmod-pot-labfiles
+
+#copy migration bundle to Downloads dir
+cp -r /home/techzone/appmod-pot-labfiles/labs/RuntimeModernization/license-demo/modresorts_migrationBundle/ ~/Downloads
+   **server.xml. remove fetures except servlet. remove the SSL and Keystore stuff
+
+#Launch TA Local and Create TA Evaluation workspace. 
+#upload archive into TA (EVALUATION) workspace
+--> /home/techzone/appmod-pot-labfiles/labs/TransformationAdvisor/AppSrv01-3.8.1.zip
+
+#Liberty binaries at: /home/techzone/Student/LabFiles/wlp-kernel-22.0.0.8.zip
+
+###OCP setup
+create OC project "resorts"
+build modresorts docker image and push to OCP image registry using the same command in the steps below. (Just staging it so it will be faster in the demo)
+Have the Liberty Opertor application-cr.yaml already setup with image, license, cpu limits
+   -> update the image reference in the application-cr.yaml to: 
+default-route-openshift-image-registry.apps.ocp.ibm.edu/resorts/modresorts:1.0
+
+
+
+###   END SETUP  ###
+
+-------------------------------
+### LIBERTY STAND_ALONE PART
+-------------------------------
+modresorts bundle in Downloads folder (from setup section)
+Have TA launched in Evaluation workspace (Open Lberty target)
+
+1. walkthrough TA, reports, migration plan, bundle
+2. View migration bundle in Downloads dir (Only need to show server.xml now)
+3. Install Liberty kernel (Unzip)   ~/Student/LabFiles
+4. create server "server1"
+5. start server "server1"
+6. Run commands 
+	bin/productInfo version     (22.0.0.8)  
+	bin/productInfo featureInfo (no features installed)
+7. Stop server "server1"
+8. copy modresorts WAR from bundle to Liberty "apps" dir
+9. copy server.xml from bundle to Liberty server
+10. bin/installUtility install server1
+11. bin/productInfo featureInfo
+12. start server "server1"
+13. localhost:9080/resorts
+14. Stop server "server1"
+
+
+
+
+
+-------------------------------
+### CONTAINERIZATION PART
+-------------------------------
+Terminal window open at migration bundle
+have docker image already built and tagged (the tag is same as in the push command below)
+have docker image pushed to OCP registry (resorts project)
+OC CLI and UI up
+be logged into docker; ocp container registry
+be on the OCP 'resorts' project
+
+
+#### go to migration bundle 
+cd /home/techzone/Downloads/modresorts10war.ear_migrationBundle
+
+#### Build
+docker build -f ./Containerfile --tag default-route-openshift-image-registry.apps.ocp.ibm.edu/resorts/modresorts:1.0 . 
+
+#### Test
+docker run -d --rm -p 9080:9080 --name resorts  default-route-openshift-image-registry.apps.ocp.ibm.edu/resorts/modresorts:1.0
+
+localhost:9080/resorts
+
+#### Stop container
+docker stop resorts
+
+#### Push
+oc login -u ocadmin -p XXXXX
+oc project resorts
+docker login -u $(oc whoami) -p $(oc whoami -t) default-route-openshift-image-registry.apps.ocp.ibm.edu
+docker push default-route-openshift-image-registry.apps.ocp.ibm.edu/resorts/modresorts:1.0  
+
+#### Deploy
+cd deploy/kustomize
+oc apply -n resorts -k overlays/resorts_1.0
+      *** Spins up 8 Liberty Core pods (servers)
+
+#### Get route and see app in browser
+oc get route -n resorts
+         http://modresorts10war-resorts.apps.ocp.ibm.edu/resorts
+                 
+#### License tracking 
+https://ibm-licensing-service-instance-ibm-common-services.apps.ocp.ibm.edu/status?token=dnwsnLNwvQ9ie4o9U5mpRhoG
+                  
+#### View the resorts appication-cr.yaml file in migration bundle
+     *** license and resources limits annotations         
