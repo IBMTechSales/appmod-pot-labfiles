@@ -11,7 +11,10 @@ git clone https://github.com/IBMTechSales/appmod-pot-labfiles
 
 ### Copy the demo files zip file into /home/techzone/Downloads
 cp /home/techzone/appmod-pot-labfiles/demo/modresorts10war.ear_migrationBundle-demo_ready.zip /home/techzone/Downloads
-unzip /home/techzone/Downloads/modresorts10war.ear_migrationBundle-demo_ready.zip
+
+unzip -d ~/Downloads /home/techzone/Downloads/modresorts10war.ear_migrationBundle-demo_ready.zip
+
+cd ~/Downloads
 
 Launch TA local and create Evaluation workspace folowing the TA lab in the Liberty on containers POT. 
 	1. Laoad the /home/techzone/appmod-pot-labfiles/labs/TransformationAdvisor/AppSrv01-3.8.1.zip file into TA UI under the Evaluation Workspace
