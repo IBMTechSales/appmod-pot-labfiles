@@ -70,7 +70,7 @@ Liberty in Container Demo
 
 
 #### go to migration bundle 
-cd /home/techzone/Downloads/modresorts10war.ear_migrationBundle-demp-ready
+cd /home/techzone/Downloads/modresorts10war.ear_migrationBundle-demo_ready
 
 
 #### Build
@@ -101,6 +101,9 @@ To OCP
 #### Push
 oc login -u ocadmin -p ibmrhocp
 
+## create project if not already created
+oc new-project resorts
+
 oc project resorts
 
 docker login -u $(oc whoami) -p $(oc whoami -t) default-route-openshift-image-registry.apps.ocp.ibm.edu
@@ -110,7 +113,7 @@ docker push default-route-openshift-image-registry.apps.ocp.ibm.edu/resorts/modr
 
 #### Deploy
 
-cd /home/techzone/Downloads/modresorts10war.ear_migrationBundle
+cd /home/techzone/Downloads/modresorts10war.ear_migrationBundle-demo_ready
 
 cd deploy/kustomize
 
