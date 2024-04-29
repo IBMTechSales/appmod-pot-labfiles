@@ -1,0 +1,185 @@
+## Liberty deploy to OCP demo
+
+
+##########
+Demo Setup
+###########
+
+###Clone the lab and demo files into /home/techzone dorectory
+cd /home/techzone
+git clone https://github.com/IBMTechSales/appmod-pot-labfiles
+
+### Copy the demo files zip file into /home/techzone/Downloads
+cp /home/techzone/appmod-pot-labfiles/demo/modresorts10war.ear_migrationBundle-demo_ready.zip /home/techzone/Downloads
+unzip /home/techzone/Downloads/modresorts10war.ear_migrationBundle-demo_ready.zip
+
+Launch TA local and create Evaluation workspace folowing the TA lab in the Liberty on containers POT. 
+	1. Laoad the /home/techzone/appmod-pot-labfiles/labs/TransformationAdvisor/AppSrv01-3.8.1.zip file into TA UI under the Evaluation Workspace
+	2. View the results laoded into TA. 
+
+If you want to show Liberty in stand-alone before deploying to container, use the Liberty on the VM 
+	/home/techzone/Student/LabFiles/wlp-kernel-22.0.0.12.zip
+
+### For faster execution of the demo, pre build and push the docker image.... 
+Pre-build the docker images using the docke build command in the demo. 
+Pre-push the docker image to the OCP internal registry using the commands in the demo
+
+
+
+#######################################################################
+OPTIONAL: Demo using server.xml to see Liberty Stand-alone run the mod resorts app
+#######################################################################
+
+### Unzip liberty 
+  Double click and it will extract to current directory:  /home/techzone/Student/LabFiles/wlp-kernel-22.0.0.12.zip
+
+cd /home/techzone/Student/LabFiles/wlp-kernel-22.0.0.12/wlp/bin
+
+./server create server1
+./start server server1
+
+http://localhost:9080    (see Liberty page displayed) 
+
+./server stop server1
+
+##copy the modresorts war file into the Liberty server 
+cp /home/techzone/Downloads/modresorts10war.ear_migrationBundle-demo_ready/target/modresorts-1.0.war /home/techzone/Student/LabFiles/wlp-kernel-22.0.0.12/wlp/usr/servers/server1/apps
+
+
+##Copy the server.xml firl from the migration bundle into the Libeety server
+cp /home/techzone/Downloads/modresorts10war.ear_migrationBundle-demo_ready/src/main/liberty/config/server.xml  /home/techzone/Student/LabFiles/wlp-kernel-22.0.0.12/wlp/usr/servers/server1
+
+##Install the Liberty features defined in the server.xml 
+./installUtility install server1 
+
+
+##Start Liberty server
+./server start server1
+
+##Run modreorts app
+http://localhost:9080/resorts
+
+##stop Liberty server
+./server stop server1
+
+
+
+##########################
+Liberty in Container Demo
+##########################
+
+
+#### go to migration bundle 
+cd /home/techzone/Downloads/modresorts10war.ear_migrationBundle-demp-ready
+
+
+#### Build
+docker build -f ./Containerfile --tag default-route-openshift-image-registry.apps.ocp.ibm.edu/resorts/modresorts:23009 . 
+
+#### Test
+docker run -d --rm -p 9080:9080 --name resorts  default-route-openshift-image-registry.apps.ocp.ibm.edu/resorts/modresorts:23009
+
+
+http://localhost:9080/resorts
+
+
+##### See Liberty version 
+docker logs resorts | grep 23.0.0.9
+
+
+
+#### Stop container
+docker stop resorts
+
+
+##########################
+To OCP
+##########################
+
+
+
+#### Push
+oc login -u ocadmin -p ibmrhocp
+
+oc project resorts
+
+docker login -u $(oc whoami) -p $(oc whoami -t) default-route-openshift-image-registry.apps.ocp.ibm.edu
+
+docker push default-route-openshift-image-registry.apps.ocp.ibm.edu/resorts/modresorts:23009  
+
+
+#### Deploy
+
+cd /home/techzone/Downloads/modresorts10war.ear_migrationBundle
+
+cd deploy/kustomize
+
+oc apply -n resorts -k overlays/resorts_1.0
+      *** Spins up 8 Liberty Core pods (servers)
+
+#### Get route and see app in browser
+oc get route -n resorts
+         http://modresorts10war-resorts.apps.ocp.ibm.edu/resorts
+         
+         
+#### License tracking 
+
+https://ibm-licensing-service-instance-ibm-common-services.apps.ocp.ibm.edu/status?token=WgldsDXi8QuWKFzT9uBXApse
+         
+         
+#### View the resorts appication-cr.yaml file
+     *** license and resources limits annotations         
+
+
+
+END DEMO
+
+
+
+
+
+
+
+
+#################################
+Zero migration upgrade
+#################################
+--------
+
+UPDATE "Containerfile" in migration bundle
+
+--------
+
+#### Build 24.0.0.1
+docker build -f ./Containerfile --tag default-route-openshift-image-registry.apps.ocp.ibm.edu/resorts/modresorts:24001 . 
+
+
+### List new docker image 
+docker images | grep 24001
+
+
+docker login -u $(oc whoami) -p $(oc whoami -t) default-route-openshift-image-registry.apps.ocp.ibm.edu
+
+docker push default-route-openshift-image-registry.apps.ocp.ibm.edu/resorts/modresorts:23009  
+
+
+#### Update application-cr.yaml to pull 24001 image from OCP image registry
+   --> gedit the the file... 
+
+
+#### Deploy
+
+cd deploy/kustomize
+
+oc apply -n resorts -k overlays/resorts_1.0
+      *** Spins up 8 Liberty Core pods (servers)
+
+#### Get route and see app in browser
+oc get route -n resorts
+         http://modresorts10war-resorts.apps.ocp.ibm.edu/resorts
+         
+         
+         
+         
+         
+
